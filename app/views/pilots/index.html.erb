@@ -1,0 +1,29 @@
+<h1>Listing pilots</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Last</th>
+      <th>Picture</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @pilots.each do |pilot| %>
+      <tr>
+        <td><%= pilot.name %></td>
+        <td><%= pilot.last %></td>
+        <td><%= pilot.picture %></td>
+        <td><%= link_to 'Show', pilot %></td>
+        <td><%= link_to 'Edit', edit_pilot_path(pilot) %></td>
+        <td><%= link_to 'Destroy', pilot, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Pilot', new_pilot_path %>

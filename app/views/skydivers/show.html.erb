@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @skydiver.name %>
+</p>
+
+<p>
+  <strong>Last:</strong>
+  <%= @skydiver.last %>
+</p>
+
+<p>
+  <strong>Picture:</strong>
+  <%= @skydiver.picture %>
+</p>
+
+<%= link_to 'Edit', edit_skydiver_path(@skydiver) %> |
+<%= link_to 'Back', skydivers_path %>

@@ -1,0 +1,29 @@
+<h1>Listing skydivers</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Last</th>
+      <th>Picture</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @skydivers.each do |skydiver| %>
+      <tr>
+        <td><%= skydiver.name %></td>
+        <td><%= skydiver.last %></td>
+        <td><%= skydiver.picture %></td>
+        <td><%= link_to 'Show', skydiver %></td>
+        <td><%= link_to 'Edit', edit_skydiver_path(skydiver) %></td>
+        <td><%= link_to 'Destroy', skydiver, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Skydiver', new_skydiver_path %>

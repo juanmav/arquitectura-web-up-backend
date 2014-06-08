@@ -11,12 +11,56 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140531031214) do
+ActiveRecord::Schema.define(version: 20140608045810) do
+
+  create_table "flights", force: true do |t|
+    t.integer  "day_order"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "flights_pilots", id: false, force: true do |t|
+    t.integer "flight_id"
+    t.integer "pilot_id"
+  end
+
+  create_table "flights_planes", id: false, force: true do |t|
+    t.integer "flight_id"
+    t.integer "plane_id"
+  end
+
+  create_table "flights_skydivers", id: false, force: true do |t|
+    t.integer "flight_id"
+    t.integer "skydiver_id"
+  end
+
+  create_table "pilots", force: true do |t|
+    t.string   "name"
+    t.string   "last"
+    t.string   "picture"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "planes", force: true do |t|
+    t.string   "domain"
+    t.string   "picture"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "servers", force: true do |t|
     t.string   "name"
     t.string   "ip"
     t.boolean  "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "skydivers", force: true do |t|
+    t.string   "name"
+    t.string   "last"
+    t.string   "picture"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

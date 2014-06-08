@@ -1,0 +1,2 @@
+module SkydiversHelper
+end
