@@ -10,6 +10,12 @@ class FlightsController < ApplicationController
   # GET /flights/1
   # GET /flights/1.json
   def show
+    @list = Flight.includes([:skydivers, :pilots, :planes]).find(params[:id])
+     respond_to do |format|
+        format.html # show.html.erb
+        format.json { render json: @list.to_json(:include => [:skydivers, :pilots, :planes]) }
+     end
+
   end
 
   # GET /flights/new
@@ -69,6 +75,6 @@ class FlightsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def flight_params
-      params.require(:flight).permit(:day_order)
+      params.require(:flight).permit(:day_order, :skydivers)
     end
 end
