@@ -30,7 +30,22 @@ class FlightsController < ApplicationController
   # POST /flights
   # POST /flights.json
   def create
-    @flight = Flight.new(flight_params)
+    puts "------------------------"
+    puts flight_params
+    puts "....................."
+    puts flight_params[:day_order]
+    puts "************"
+    puts flight_params[:skydivers]
+    puts "------------------------"
+
+    @flight = Flight.new(flight_params.except(:skydivers))
+
+    @flight.save
+
+
+    flight_params[:skydivers].each do |value|
+        @flight.skydivers << Skydiver.find(value[:id])
+    end
 
     respond_to do |format|
       if @flight.save
@@ -75,6 +90,6 @@ class FlightsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def flight_params
-      params.require(:flight).permit(:day_order, :skydivers)
+      params.permit(:day_order, {:skydivers => [:id]})
     end
 end

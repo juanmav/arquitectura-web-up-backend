@@ -13,23 +13,18 @@
 
 ActiveRecord::Schema.define(version: 20140608045810) do
 
+  create_table "captains", id: false, force: true do |t|
+    t.integer "flight_id"
+    t.integer "pilot_id"
+  end
+
   create_table "flights", force: true do |t|
     t.integer  "day_order"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "flights_pilots", id: false, force: true do |t|
-    t.integer "flight_id"
-    t.integer "pilot_id"
-  end
-
-  create_table "flights_planes", id: false, force: true do |t|
-    t.integer "flight_id"
-    t.integer "plane_id"
-  end
-
-  create_table "flights_skydivers", id: false, force: true do |t|
+  create_table "passengers", id: false, force: true do |t|
     t.integer "flight_id"
     t.integer "skydiver_id"
   end
@@ -63,6 +58,11 @@ ActiveRecord::Schema.define(version: 20140608045810) do
     t.string   "picture"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "transports", id: false, force: true do |t|
+    t.integer "flight_id"
+    t.integer "plane_id"
   end
 
 end

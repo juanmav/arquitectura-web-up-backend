@@ -1,3 +1,4 @@
 class Pilot < ActiveRecord::Base
-    has_and_belongs_to_many :flights
+    has_many :captain
+    has_many :flights, through: :captain
 end
