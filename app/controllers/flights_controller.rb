@@ -4,7 +4,11 @@ class FlightsController < ApplicationController
   # GET /flights
   # GET /flights.json
   def index
-    @flights = Flight.all
+    @flights = Flight.includes([:skydivers, :pilots, :planes, :status]).where("created_at > ?", Date.yesterday ).order("day_order ASC")
+    respond_to do |format|
+        format.html # show.html.erb
+        format.json { render json: @flights.to_json(:include => [:skydivers, :pilots, :planes, :status]) }
+    end
   end
 
   # GET /flights/1
@@ -15,7 +19,6 @@ class FlightsController < ApplicationController
         format.html # show.html.erb
         format.json { render json: @list.to_json(:include => [:skydivers, :pilots, :planes]) }
      end
-
   end
 
   # GET /flights/new
@@ -30,27 +33,17 @@ class FlightsController < ApplicationController
   # POST /flights
   # POST /flights.json
   def create
-    puts "------------------------"
-    puts flight_params
-    puts "....................."
-    puts flight_params[:day_order]
-    puts "************"
-    puts flight_params[:skydivers]
-    puts "------------------------"
-
-    @flight = Flight.new(flight_params.except(:skydivers))
-
+    @flight = Flight.new(flight_params.except(:skydivers, :pilots, :planes))
+    @flight.status = Status.find(1)
     @flight.save
 
-
-    flight_params[:skydivers].each do |value|
-        @flight.skydivers << Skydiver.find(value[:id])
-    end
+    update_flight
 
     respond_to do |format|
       if @flight.save
         format.html { redirect_to @flight, notice: 'Flight was successfully created.' }
-        format.json { render :show, status: :created, location: @flight }
+        format.json { render json: @flight.to_json(:include => [:skydivers, :pilots, :planes]) }
+        #format.json { render :show, status: :created, location: @flight }
       else
         format.html { render :new }
         format.json { render json: @flight.errors, status: :unprocessable_entity }
@@ -61,8 +54,12 @@ class FlightsController < ApplicationController
   # PATCH/PUT /flights/1
   # PATCH/PUT /flights/1.json
   def update
+    @flight.update(flight_params.except(:skydivers, :pilots, :planes))
+
+    update_flight
+
     respond_to do |format|
-      if @flight.update(flight_params)
+      if @flight.save
         format.html { redirect_to @flight, notice: 'Flight was successfully updated.' }
         format.json { render :show, status: :ok, location: @flight }
       else
@@ -90,6 +87,26 @@ class FlightsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def flight_params
-      params.permit(:day_order, {:skydivers => [:id]})
+      params.permit(:altitude, :day_order, skydivers: [:id], pilots: [:id], planes: [:id])
+    end
+
+    def update_flight
+        @flight.skydivers.destroy_all
+        @flight.pilots.destroy_all
+        @flight.planes.destroy_all
+        # Agrego los paracaidistas
+        Array(flight_params[:skydivers]).each do |value|
+           @flight.skydivers << Skydiver.find(value[:id])
+        end
+
+        #Agrego los Pilotos
+        Array(flight_params[:pilots]).each do |value|
+           @flight.pilots << Pilot.find(value[:id])
+        end
+
+        #Agrego los Aviones
+        Array(flight_params[:planes]).each do |value|
+           @flight.planes << Plane.find(value[:id])
+        end
     end
 end
