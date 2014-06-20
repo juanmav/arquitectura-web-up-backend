@@ -9,7 +9,7 @@ class FlightsController < ApplicationController
             @flights = Flight.includes([:skydivers, :pilots, :planes, :status]).all
         }
         format.json {
-            @flights = Flight.includes([:skydivers, :pilots, :planes, :status]).where("created_at > ?", Date.today ).order("day_order ASC")
+            @flights = Flight.includes([:skydivers, :pilots, :planes, :status]).where(["date(created_at) = ?", Date.today]).order("day_order ASC")
             render json: @flights.to_json(:include => [:skydivers, :pilots, :planes, :status])
             }
     end
