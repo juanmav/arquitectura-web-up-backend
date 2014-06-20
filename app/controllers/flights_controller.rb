@@ -4,10 +4,14 @@ class FlightsController < ApplicationController
   # GET /flights
   # GET /flights.json
   def index
-    @flights = Flight.includes([:skydivers, :pilots, :planes, :status]).where("created_at > ?", Date.yesterday ).order("day_order ASC")
     respond_to do |format|
-        format.html # show.html.erb
-        format.json { render json: @flights.to_json(:include => [:skydivers, :pilots, :planes, :status]) }
+        format.html {
+            @flights = Flight.includes([:skydivers, :pilots, :planes, :status]).all
+        }
+        format.json {
+            @flights = Flight.includes([:skydivers, :pilots, :planes, :status]).where("created_at > ?", Date.today ).order("day_order ASC")
+            render json: @flights.to_json(:include => [:skydivers, :pilots, :planes, :status])
+            }
     end
   end
 
@@ -42,7 +46,7 @@ class FlightsController < ApplicationController
     respond_to do |format|
       if @flight.save
         format.html { redirect_to @flight, notice: 'Flight was successfully created.' }
-        format.json { render json: @flight.to_json(:include => [:skydivers, :pilots, :planes]) }
+        format.json { render json: @flight.to_json(:include => [:skydivers, :pilots, :planes, :status]) }
         #format.json { render :show, status: :created, location: @flight }
       else
         format.html { render :new }
@@ -87,13 +91,18 @@ class FlightsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def flight_params
-      params.permit(:altitude, :day_order, skydivers: [:id], pilots: [:id], planes: [:id])
+      params.permit(:status_id, :altitude, :day_order, skydivers: [:id], pilots: [:id], planes: [:id])
     end
 
     def update_flight
         @flight.skydivers.destroy_all
         @flight.pilots.destroy_all
         @flight.planes.destroy_all
+
+        if flight_params[:status_id]
+            @flight.status = Status.find(flight_params[:status_id])
+        end
+
         # Agrego los paracaidistas
         Array(flight_params[:skydivers]).each do |value|
            @flight.skydivers << Skydiver.find(value[:id])
