@@ -4,11 +4,13 @@ class ReportsController < ApplicationController
   # GET /reports
   # GET /reports.json
   def index
+    puts report_params
     @reports = Report.find_by_sql('SELECT "skydivers"."name", "flights"."altitude", COUNT(*) as count FROM skydivers
                                   INNER JOIN "passengers" ON "skydivers"."id" = "passengers"."skydiver_id"
                                   INNER JOIN "flights" ON "flights"."id" = "passengers"."flight_id"
                                   WHERE "flights"."status_id" = 5
-                                  GROUP BY [name], [altitude]
+                                  AND date("flights"."created_at") = date(\'' + report_params[:date] + '\')' +
+                                  ' GROUP BY [name], [altitude]
                                   ORDER BY [name], [altitude] DESC;')
   end
 
@@ -74,6 +76,6 @@ class ReportsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def report_params
-      params[:report]
+      params.permit(:date)
     end
 end
