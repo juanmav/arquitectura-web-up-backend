@@ -6,6 +6,11 @@ class ApplicationController < ActionController::Base
 
     before_filter :set_headers
 
+    def index
+      puts "Do nothing."
+      render nothing: true
+    end
+
     def set_headers
       puts 'ApplicationController.set_headers'
       if request.headers["HTTP_ORIGIN"]
@@ -19,6 +24,4 @@ class ApplicationController < ActionController::Base
         headers['Access-Control-Allow-Credentials'] = 'true'
       end
     end
-
-
 end

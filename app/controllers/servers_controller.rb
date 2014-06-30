@@ -26,6 +26,10 @@ class ServersController < ApplicationController
   def create
     @server = Server.new(server_params)
 
+    if @server.status == nil
+        @server.status = false
+    end
+
     respond_to do |format|
       if @server.save
         format.html { redirect_to @server, notice: 'Server was successfully created.' }
